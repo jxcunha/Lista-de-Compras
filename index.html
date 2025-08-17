@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FF9800" />
+  <title>Lista de Compras (Compartilhada)</title>
+  <link rel="icon" type="image/png" href="Carrinho.png" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fff8e1;
+      margin: 0;
+      padding: 1em;
+    }
+    header {
+      background-color: #ff5722;
+      text-align: center;
+      padding: 1em;
+      border-radius: 10px 10px 0 0;
+      color: #fff;
+    }
+    header img { max-height: 100px; }
+    .form {
+      padding: 0.5em;
+      background-color: #2196f3;
+      border-radius: 0 0 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      color: white;
+    }
+    input, select, button {
+      margin: 0.2em 0;
+      padding: 0.3em 0.7em;
+      font-size: 1em;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4caf50;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .linha {
+      display: flex;
+      gap: 0.5em;
+      flex-wrap: wrap;
+    }
+    .linha > * { flex: 1; min-width: 150px; }
+    .categoria-barra {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .categoria-barra input { flex-grow: 1; }
+    .categoria-barra button {
+      background-color: #ff9800;
+      color: white;
+      font-size: 1.1em;
+    }
+    ul { list-style: none; padding: 0; }
+    li {
+      font-size: 0.9em;
+      background-color: #fff;
+      margin: 0.1em 0;
+      padding: 0.3em 0.7em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 6px;
+      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
+    }
+    .item-info { flex-grow: 1; padding: 0 1em; }
+    .item-info.riscado { text-decoration: line-through; opacity: 0.6; }
+    .actions button {
+      margin-left: 0.5em;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1em;
+    }
+    .export-import {
+      margin-top: 1em;
+      display: flex;
+      gap: 1em;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .aviso {
+      font-size: 0.9em;
+      color: #333;
+      margin-top: 0.5em;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      padding: 0.5em;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Lista de Compras (Compartilhada)</h1>
+    <img src="Carrinho.png" alt="Carrinho de supermercado" />
+  </header>
+
+  <div class="form">
+    <div class="linha">
+      <input type="text" id="listId" placeholder="Código da Lista (ex.: minha-lista)" />
+      <button id="btnAplicarLista" title="Trocar/Aplicar código de lista">Aplicar</button>
+    </div>
+    <div class="linha">
+      <input type="text" id="produto" placeholder="Produto" />
+      <input type="text" id="quantidade" placeholder="Quantidade" />
+    </div>
+    <div class="categoria-barra">
+      <input type="text" id="categoria" placeholder="Categoria" />
+      <button id="btnBuscar" title="Buscar por categoria">🔍</button>
+    </div>
+    <div class="linha">
+      <button id="btnIncluir">Incluir</button>
+      <button id="btnLimparBusca" style="background:#607d8b">Limpar Busca</button>
+    </div>
+    <div class="aviso">
+      Quem usar o <strong>mesmo Código da Lista</strong> verá e editará os mesmos itens em tempo real.
+      Compartilhe esse código só com quem deve ter acesso.
+    </div>
+  </div>
+
+  <ul id="lista" style="padding:0;"></ul>
+
+  <div class="export-import">
+    <button id="btnExportar">Exportar Lista (JSON)</button>
+    <button id="btnImportar" style="background:#9c27b0">Importar Lista (JSON)</button>
+    <input type="file" id="arquivoImportacao" accept=".json" style="display:none" />
+  </div>
+
+  <!-- Firebase v9 (modular) via CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase, ref, push, onValue, remove, update, off
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAqKRgVySm-vGFMi_iE2HJqlDAofmEAKAI",
+      authDomain: "listacompras-8b4b0.firebaseapp.com",
+      databaseURL: "https://listacompras-8b4b0-default-rtdb.firebaseio.com",
+      projectId: "listacompras-8b4b0",
+      storageBucket: "listacompras-8b4b0.firebasestorage.app",
+      messagingSenderId: "729159542190",
+      appId: "1:729159542190:web:bd0571be160cfd723a543f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getDatabase(app);
+
+    let listId = localStorage.getItem("listId") || "minha-lista";
+    let itensCache = [];
+    let buscandoCategoria = "";
+    let unsubscribe = null;
+
+    const $listId   = document.getElementById("listId");
+    const $produto  = document.getElementById("produto");
+    const $qtd      = document.getElementById("quantidade");
+    const $cat      = document.getElementById("categoria");
+    const $lista    = document.getElementById("lista");
+    const $arqImp   = document.getElementById("arquivoImportacao");
+
+    const $btnAplicarLista = document.getElementById("btnAplicarLista");
+    const $btnIncluir      = document.getElementById("btnIncluir");
+    const $btnBuscar       = document.getElementById("btnBuscar");
+    const $btnLimparBusca  = document.getElementById("btnLimparBusca");
+    const $btnExportar     = document.getElementById("btnExportar");
+    const $btnImportar     = document.getElementById("btnImportar");
+
+    $listId.value = listId;
+
+    function caminhoLista() {
+      return `listas/${listId}/itens`;
+    }
+
+    function observarLista() {
+      if (unsubscribe) {
+        off(ref(db, caminhoLista()));
+        unsubscribe = null;
+      }
+      const r = ref(db, caminhoLista());
+      unsubscribe = onValue(r, (snap) => {
+        const dados = snap.val() || {};
+        itensCache = Object.entries(dados).map(([id, v]) => ({ id, ...v }));
+        renderizar();
+      });
+    }
+
+    function renderizar() {
+      $lista.innerHTML = "";
+      const filtro = (buscandoCategoria || "").trim().toLowerCase();
+      const origem = filtro
+        ? itensCache.filter(i => (i.categoria || "").toLowerCase().includes(filtro))
+        : itensCache;
+
+      origem.forEach(item => {
+        const li = document.createElement("li");
+
+        const info = document.createElement("div");
+        info.className = "item-info" + (item.riscado ? " riscado" : "");
+        info.innerHTML = `<strong>${escapeHtml(item.produto || "")}</strong> - ${escapeHtml(item.quantidade || "")} (${escapeHtml(item.categoria || "")})`;
+
+        const editar = document.createElement("button");
+        editar.title = item.riscado ? "Desmarcar" : "Marcar como comprado";
+        editar.textContent = "✏️";
+        editar.onclick = async () => {
+          await update(ref(db, `${caminhoLista()}/${item.id}`), { riscado: !item.riscado });
+        };
+
+        const excluir = document.createElement("button");
+        excluir.title = "Excluir";
+        excluir.textContent = "🗑️";
+        excluir.onclick = async () => {
+          await remove(ref(db, `${caminhoLista()}/${item.id}`));
+        };
+
+        const acoes = document.createElement("div");
+        acoes.className = "actions";
+        acoes.appendChild(editar);
+        acoes.appendChild(excluir);
+
+        li.appendChild(info);
+        li.appendChild(acoes);
+        $lista.appendChild(li);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    async function incluirItem() {
+      const produto    = $produto.value.trim();
+      const quantidade = $qtd.value.trim();
+      const categoria  = $cat.value.trim();
+      if (!produto) return;
+
+      await push(ref(db, caminhoLista()), {
+        produto,
+        quantidade,
+        categoria,
+        riscado: false,
+        ts: Date.now()
+      });
+
+      $produto.value = "";
+      $qtd.value = "";
+      $produto.focus();
+    }
+
+    function buscarPorCategoria() {
+      buscandoCategoria = ($cat.value || "").trim();
+      renderizar();
+    }
+
+    function limparBusca() {
+      buscandoCategoria = "";
+      $cat.value = "";
+      renderizar();
+    }
+
+    function exportarLista() {
+      const data = JSON.stringify(itensCache.map(({id, ...rest}) => rest), null, 2);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lista-${listId}.json`;
+      a.click();
+    }
+
+    function importarLista() {
+      $arqImp.click();
+    }
+
+    $arqImp.addEventListener("change", async () => {
+      const file = $arqImp.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const itens = JSON.parse(text);
+        if (!Array.isArray(itens)) throw new Error("formato inválido");
+
+        for (const it of itens) {
+          const prod = (it.produto || "").toString();
+          if (!prod) continue;
+          await push(ref(db, caminhoLista()), {
+            produto: prod,
+            quantidade: (it.quantidade || "").toString(),
+            categoria: (it.categoria || "").toString(),
+            riscado: !!it.riscado,
+            ts: it.ts || Date.now()
+          });
+        }
+        alert("Importação concluída!");
+      } catch (e) {
+        console.error(e);
+        alert("Arquivo inválido!");
+      } finally {
+        $arqImp.value = "";
+      }
+    });
+
+    async function aplicarListId() {
+      const novo = ($listId.value || "").trim();
+      if (!novo) { alert("Informe um código de lista."); return; }
+      listId = novo;
+      localStorage.setItem("listId", listId);
+      observarLista();
+    }
+
+    $btnAplicarLista.addEventListener("click", aplicarListId);
+    $btnIncluir.addEventListener("click", incluirItem);
+    $btnBuscar.addEventListener("click", buscarPorCategoria);
+    $btnLimparBusca.addEventListener("click", limparBusca);
+    $btnExportar.addEventListener("click", exportarLista);
+    $btnImportar.addEventListener("click", importarLista);
+
+    [$produto, $qtd].forEach(inp => {
+      inp.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") incluirItem();
+      });
+    });
+
+    observarLista();
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js")
+          .then(reg => console.log("Service Worker registrado!", reg))
+          .catch(err => console.error("Erro ao registrar o Service Worker:", err));
+      });
+    }
+  </script>
+</body>
+</html>
