@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#FF9800" />
   <title>Lista de Compras</title>
-  <link rel="icon" type="image/png" href="Carrinho.png" />
+  <link rel="icon" type="image/png" href="./Carrinho.png" />
   <link rel="manifest" href="manifest.json" />
   <style>
     body {
@@ -88,7 +88,7 @@
 </head>
 <body>
   <header>
-    <img src="Carrinho.png" alt="Carrinho de supermercado" />
+    <img src="./Carrinho.png" alt="Carrinho de supermercado" />
   </header>
 
   <div class="form">
@@ -125,7 +125,7 @@
     const db  = getDatabase(app);
 
     // ---- Estado/UI ----
-    const listId = "minha-lista"; // lista fixa (como você pediu)
+    const listId = "minha-lista"; // lista fixa
     const $produto   = document.getElementById("produto");
     const $qtd       = document.getElementById("quantidade");
     const $cat       = document.getElementById("categoria");
@@ -193,7 +193,7 @@
         editar.textContent = "✏️";
         editar.onclick = async () => {
           try {
-            await update(ref(db, \`\${caminhoLista()}/\${item.id}\`), { riscado: !item.riscado });
+            await update(ref(db, `${caminhoLista()}/${item.id}`), { riscado: !item.riscado });
           } catch (e) {
             console.error(e); setStatus("Falha ao atualizar item (regras do DB?).", true);
           }
@@ -204,7 +204,7 @@
         excluir.textContent = "🗑️";
         excluir.onclick = async () => {
           try {
-            await remove(ref(db, \`\${caminhoLista()}/\${item.id}\`));
+            await remove(ref(db, `${caminhoLista()}/${item.id}`));
           } catch (e) {
             console.error(e); setStatus("Falha ao excluir item (regras do DB?).", true);
           }
