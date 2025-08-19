@@ -213,7 +213,7 @@
         await push(ref(db, caminhoLista()), {
           produto, quantidade, categoria, riscado: false, ts: Date.now()
         });
-        setStatus("Item incluído!");
+        setStatus("");
         $produto.value = "";
         $qtd.value = "";
         $produto.focus();
