@@ -3,106 +3,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#FF9800" />
+  <meta name="theme-color" content="#FF5722" />
   <title>Lista de Compras</title>
   <link rel="icon" type="image/png" href="./Carrinho.png" />
   <link rel="manifest" href="manifest.json" />
   <style>
-    body {
-      font-family: sans-serif;
-      background-color: #fff8e1;
-      margin: 0;
-      padding: 1em;
+    :root{
+      --bg:#f1f1f1;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow: 0 10px 25px rgba(0,0,0,.08);
+      --primary:#ff5722;
+      --primary-hover:#e64a19;
+      --radius:16px;
     }
-    header {
-      background-color: #ff5722;
-      text-align: center;
-      padding: 1em;
-      border-radius: 10px 10px 0 0;
-      color: #fff;
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
-    header img { max-height: 100px; }
-    .form {
-      padding: 0.5em;
-      background-color: #2196f3;
-      border-radius: 0 0 10px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5em;
-      color: white;
+
+    .app{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
     }
-    input, button {
-      margin: 0.2em 0;
-      padding: 0.3em 0.7em;
-      font-size: 1em;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+
+    .top{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 12px;
+      padding: 6px 0 10px;
     }
-    button {
-      background-color: #4caf50;
-      color: white;
-      font-weight: bold;
+    .logo{
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,.10);
+      padding: 10px;
+      object-fit: contain;
+    }
+    .title{
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .card h2{
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      margin-bottom: 10px;
+    }
+
+    input{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+    }
+    input:focus{
+      border-color: rgba(255,87,34,.55);
+      box-shadow: 0 0 0 4px rgba(255,87,34,.12);
+    }
+
+    .btn-icon{
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
       cursor: pointer;
+      font-size: 18px;
     }
-    /* barra de categoria + lupa */
-    .categoria-barra {
-      display: flex;
-      gap: 0.5em;
-      align-items: center;
-    }
-    .categoria-barra input { flex: 1; }
-    .btn-lupa {
-      background: #ff9800;
-      border: 1px solid #e68a00;
-      font-size: 1.1em;
-      padding: 0.3em 0.6em;
-    }
-    ul { list-style: none; padding: 0; }
-    li {
-      font-size: 0.9em;
-      background-color: #fff;
-      margin: 0.1em 0;
-      padding: 0.3em 0.7em;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 6px;
-      box-shadow: 1px 1px 4px rgba(0,0,0,0.1);
-    }
-    .item-info { flex-grow: 1; padding: 0 1em; }
-    .item-info.riscado { text-decoration: line-through; opacity: 0.6; }
-    .actions button {
-      margin-left: 0.5em;
-      background-color: transparent;
+
+    .btn-primary{
+      width: 100%;
+      padding: 12px 14px;
       border: none;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 16px;
       cursor: pointer;
-      font-size: 1.1em;
+      box-shadow: 0 10px 18px rgba(255,87,34,.22);
     }
-    .status {
-      font-size: .9em;
-      color: #222;
-      margin-top: .25rem;
+    .btn-primary:hover{ background: var(--primary-hover); }
+
+    /* Lista */
+    ul.lista{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .status.error { color: #b00020; }
+    ul.lista li{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .item-info .name{
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .item-info .meta{
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .actions{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+    }
+    .actions button{
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor:pointer;
+      font-size: 18px;
+    }
+
+    /* Responsivo */
+    @media (max-width: 640px){
+      .title{ font-size: 22px; }
+      .row{ flex-direction: column; align-items: stretch; }
+      .btn-icon{ width: 100%; }
+      .search-row{ flex-direction: row; }
+      .search-row .btn-icon{ width: 52px; flex: 0 0 52px; }
+
+    }
   </style>
 </head>
 <body>
-  <header>
-    <img src="./Carrinho.png" alt="Carrinho de supermercado" />
-  </header>
-
-  <div class="form">
-    <input type="text" id="produto" placeholder="Produto" />
-    <input type="text" id="quantidade" placeholder="Quantidade" />
-    <div class="categoria-barra">
-      <input type="text" id="categoria" placeholder="Categoria" />
-      <button id="btnBuscar" class="btn-lupa" title="Filtrar por categoria">🔍</button>
+  <main class="app">
+    <div class="top">
+      <img class="logo" src="./Carrinho.png" alt="Carrinho de supermercado" />
+      
     </div>
-    <button id="btnIncluir">Incluir</button>
-    <div id="status" class="status"></div>
-  </div>
 
-  <ul id="lista" style="padding:0;"></ul>
+    <section class="card">
+      <h2>Adicionar item</h2>
+
+      <div class="row">
+        <input type="text" id="produto" placeholder="Produto" />
+        <input type="text" id="quantidade" placeholder="Quantidade" />
+      </div>
+
+      <div class="row search-row">
+        <input type="text" id="categoria" placeholder="Categoria (opcional)" />
+        <button id="btnBuscar" class="btn-icon" title="Filtrar por categoria">🔍</button>
+      </div>
+
+      <button id="btnIncluir" class="btn-primary">+ Incluir item</button>
+    </section>
+
+    <section class="card">
+      <h2>Itens adicionados</h2>
+      <ul id="lista" class="lista"></ul>
+    </section>
+  </main>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -128,18 +225,18 @@
     const $btnBuscar = document.getElementById("btnBuscar");
     const $btnIncluir= document.getElementById("btnIncluir");
     const $lista     = document.getElementById("lista");
-    const $status    = document.getElementById("status");
-
-    let itensCache = [];
+    const $status = document.getElementById("status");
+let itensCache = [];
     let filtroCategoria = "";
     let detach = null;
 
     function setStatus(msg, isError=false) {
+      // Barra de status removida do layout (mantido para logs/compatibilidade)
+      if (!$status) return;
       $status.textContent = msg || "";
       $status.className = "status" + (isError ? " error" : "");
     }
-
-    function caminhoLista() {
+function caminhoLista() {
       return `listas/${listId}/itens`;
     }
 
@@ -174,13 +271,16 @@
         ? itensCache.filter(i => (i.categoria || "").toLowerCase().includes(filtroCategoria))
         : itensCache;
 
-      origem.forEach(item => {
+      const origemOrdenada = [...origem].sort((a,b) => (b.ts||0) - (a.ts||0));
+
+      origemOrdenada.forEach(item => {
         const li = document.createElement("li");
 
         const info = document.createElement("div");
         info.className = "item-info" + (item.riscado ? " riscado" : "");
         info.innerHTML =
-          `<strong>${escapeHtml(item.produto || "")}</strong> - ${escapeHtml(item.quantidade || "")} (${escapeHtml(item.categoria || "")})`;
+          `<div class="name">${escapeHtml(item.produto || "")}</div>
+           <div class="meta">Qtd: ${escapeHtml(item.quantidade || "")}${(item.categoria ? " • " + escapeHtml(item.categoria) : "")}</div>`;
 
         const excluir = document.createElement("button");
         excluir.title = "Excluir";
@@ -245,5 +345,11 @@
 
     observarLista();
   </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
+    }
+  </script>
+
 </body>
 </html>
