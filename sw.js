@@ -1,6 +1,6 @@
 
 // Cache simples com caminhos RELATIVOS (compatível com GitHub Pages em subpasta)
-const CACHE_NAME = 'lista-compras-cache-v5';
+const CACHE_NAME = 'lista-compras-cache-v6';
 const URLS_TO_CACHE = [
   './',
   './index.html',
