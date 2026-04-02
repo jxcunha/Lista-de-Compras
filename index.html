@@ -10,11 +10,11 @@
   <style>
     :root{
       --bg:#f1f1f1; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-      --border:#e5e7eb; --shadow: 0 10px 25px rgba(0,0,0,.08);
+      --border:#e5e7eb; --shadow:0 10px 25px rgba(0,0,0,.08);
       --primary:#ff5722; --primary-hover:#e64a19; --radius:16px;
     }
-    *{ box-sizing: border-box; }
-    body{ margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
+    *{ box-sizing:border-box; }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
     .app{ max-width:920px; margin:0 auto; padding:20px; display:grid; gap:16px; }
     .top{ display:flex; align-items:center; justify-content:center; gap:12px; padding:6px 0 10px; }
     .logo{ width:54px; height:54px; border-radius:14px; background:#fff; box-shadow:0 8px 20px rgba(0,0,0,.10); padding:10px; object-fit:contain; }
@@ -26,9 +26,10 @@
     .btn-icon{ width:44px; height:44px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer; font-size:18px; }
     .btn-primary{ width:100%; padding:12px 14px; border:none; border-radius:14px; background:var(--primary); color:#fff; font-weight:800; font-size:16px; cursor:pointer; box-shadow:0 10px 18px rgba(255,87,34,.22); }
     .btn-primary:hover{ background:var(--primary-hover); }
-    .btn-notif{ width:100%; padding:11px 14px; border:2px solid var(--primary); border-radius:14px; background:#fff; color:var(--primary); font-weight:800; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-notif{ width:100%; padding:11px 14px; border:2px solid var(--primary); border-radius:14px; background:#fff; color:var(--primary); font-weight:800; font-size:15px; cursor:pointer; }
     .btn-notif:hover{ background:#fff5f2; }
-    .btn-notif.ativo{ background:#e8f5e9; border-color:#4caf50; color:#2e7d32; }
+    .btn-notif.ativo{ background:#e8f5e9; border-color:#4caf50; color:#2e7d32; cursor:default; }
+    .btn-notif.erro{ border-color:#f59e0b; color:#b45309; background:#fffbeb; font-size:13px; cursor:default; }
     ul.lista{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; }
     ul.lista li{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border:1px solid var(--border); border-radius:14px; background:#fff; }
     .item-info .name{ font-weight:800; font-size:16px; margin-bottom:4px; display:flex; align-items:center; gap:6px; cursor:pointer; width:fit-content; }
@@ -43,7 +44,6 @@
     .modal-header{ display:flex; justify-content:space-between; align-items:center; }
     .modal-header h3{ margin:0; font-size:17px; font-weight:800; }
     .modal-close{ background:#f3f4f6; border:none; width:30px; height:30px; border-radius:8px; font-size:14px; cursor:pointer; color:var(--muted); }
-    .modal-close:hover{ background:#e5e7eb; }
     .foto-preview{ width:100%; border-radius:14px; border:2px dashed var(--border); min-height:180px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#f9fafb; }
     .foto-preview img{ width:100%; object-fit:contain; max-height:280px; }
     .foto-preview .sem-foto{ color:var(--muted); font-size:14px; text-align:center; padding:20px; line-height:2; }
@@ -66,7 +66,6 @@
     <div class="top">
       <img class="logo" src="./Carrinho.png" alt="Carrinho de supermercado" />
     </div>
-
     <section class="card">
       <h2>Adicionar item</h2>
       <div class="row">
@@ -75,21 +74,18 @@
       </div>
       <div class="row search-row">
         <input type="text" id="categoria" placeholder="Categoria (opcional)" />
-        <button id="btnBuscar" class="btn-icon" title="Filtrar por categoria">&#128269;</button>
+        <button id="btnBuscar" class="btn-icon" title="Filtrar">&#128269;</button>
       </div>
       <button id="btnIncluir" class="btn-primary">+ Incluir item</button>
     </section>
-
     <section class="card">
       <button id="btnNotif" class="btn-notif">&#128276; Ativar Notificacoes</button>
     </section>
-
     <section class="card">
       <h2>Itens adicionados</h2>
       <ul id="lista" class="lista"></ul>
     </section>
   </main>
-
   <div class="modal-overlay" id="modalFoto">
     <div class="modal">
       <div class="modal-header">
@@ -108,7 +104,6 @@
       <input type="file" id="inputCamera" accept="image/*" capture="environment" />
     </div>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import { getDatabase, ref, push, set, onValue, remove, update, off } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
@@ -147,6 +142,9 @@
     let itensCache = [], filtroCategoria = "", detach = null, itemFotoAtual = null;
     let primeiraCarregada = false, ultimoTs = 0;
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
     function mostrarNotificacao(titulo, corpo) {
       if (Notification.permission !== 'granted') return;
       navigator.serviceWorker.ready.then(reg => {
@@ -155,13 +153,26 @@
     }
 
     async function iniciarNotificacoes() {
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-        $btnNotif.textContent = 'Notificacoes nao suportadas';
+      if (isIOS && !isStandalone) {
+        $btnNotif.innerHTML = '&#128241; Abra pelo icone na tela inicial';
+        $btnNotif.classList.add('erro');
+        return;
+      }
+      if (!('Notification' in window)) {
+        $btnNotif.innerHTML = '&#9888; Notificacoes nao suportadas neste browser';
+        $btnNotif.classList.add('erro');
+        return;
+      }
+      if (!('serviceWorker' in navigator)) {
+        $btnNotif.innerHTML = '&#9888; ServiceWorker nao suportado';
+        $btnNotif.classList.add('erro');
         return;
       }
       const permissao = await Notification.requestPermission();
       if (permissao === 'granted') {
-        atualizarBotaoNotif(true);
+        $btnNotif.innerHTML = '&#128994; Notificacoes ativas';
+        $btnNotif.classList.add('ativo');
+        $btnNotif.disabled = true;
         try {
           const messaging = getMessaging(app);
           const token = await getToken(messaging, { vapidKey: VAPID_KEY });
@@ -179,24 +190,15 @@
           console.warn('FCM nao disponivel:', e.message);
         }
       } else {
-        atualizarBotaoNotif(false);
+        $btnNotif.innerHTML = '&#128276; Permissao negada — verifique as configuracoes';
+        $btnNotif.classList.add('erro');
       }
     }
 
-    function atualizarBotaoNotif(ativo) {
-      if (ativo) {
-        $btnNotif.textContent = '&#128276; Notificacoes ativas';
-        $btnNotif.classList.add('ativo');
-        $btnNotif.disabled = true;
-      } else {
-        $btnNotif.textContent = '&#128276; Ativar Notificacoes';
-        $btnNotif.classList.remove('ativo');
-      }
-    }
-
-    // Verifica se ja tem permissao ao carregar
     if ('Notification' in window && Notification.permission === 'granted') {
-      atualizarBotaoNotif(true);
+      $btnNotif.innerHTML = '&#128994; Notificacoes ativas';
+      $btnNotif.classList.add('ativo');
+      $btnNotif.disabled = true;
       iniciarNotificacoes();
     }
 
@@ -213,10 +215,7 @@
         if (primeiraCarregada) {
           novosItens.forEach(item => {
             if ((item.ts||0) > ultimoTs && item.deviceId !== deviceId) {
-              mostrarNotificacao(
-                item.produto + ' adicionado!',
-                item.quantidade ? 'Quantidade: ' + item.quantidade : 'Novo item na lista'
-              );
+              mostrarNotificacao(item.produto + ' adicionado!', item.quantidade ? 'Quantidade: ' + item.quantidade : 'Novo item na lista');
             }
           });
         }
@@ -252,9 +251,7 @@
 
     function renderizar() {
       $lista.innerHTML = "";
-      const origem = filtroCategoria
-        ? itensCache.filter(i => (i.categoria||"").toLowerCase().includes(filtroCategoria))
-        : itensCache;
+      const origem = filtroCategoria ? itensCache.filter(i => (i.categoria||"").toLowerCase().includes(filtroCategoria)) : itensCache;
       [...origem].sort((a,b)=>(b.ts||0)-(a.ts||0)).forEach(item => {
         const li = document.createElement("li");
         const info = document.createElement("div");
@@ -276,27 +273,22 @@
         const meta = document.createElement("div");
         meta.className = "meta";
         meta.textContent = 'Qtd: ' + (item.quantidade||"") + (item.categoria ? " - "+item.categoria : "");
-        info.appendChild(nameDiv);
-        info.appendChild(meta);
+        info.appendChild(nameDiv); info.appendChild(meta);
         const excluir = document.createElement("button");
-        excluir.title = "Excluir";
-        excluir.textContent = "🗑️";
+        excluir.title = "Excluir"; excluir.textContent = "🗑️";
         excluir.onclick = async () => {
           try { await remove(ref(db, caminhoLista()+'/'+item.id)); }
           catch(e) { console.error(e); }
         };
         const acoes = document.createElement("div");
-        acoes.className = "actions";
-        acoes.appendChild(excluir);
-        li.appendChild(info);
-        li.appendChild(acoes);
-        $lista.appendChild(li);
+        acoes.className = "actions"; acoes.appendChild(excluir);
+        li.appendChild(info); li.appendChild(acoes); $lista.appendChild(li);
       });
     }
 
     async function incluirItem() {
-      const produto   = ($produto.value||"").trim();
-      const quantidade= ($qtd.value||"").trim();
+      const produto = ($produto.value||"").trim();
+      const quantidade = ($qtd.value||"").trim();
       const categoria = ($cat.value||"").trim();
       if (!produto) return;
       try {
@@ -361,4 +353,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
