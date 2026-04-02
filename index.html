@@ -173,6 +173,7 @@
         $btnNotif.innerHTML = '&#128994; Notificacoes ativas';
         $btnNotif.classList.add('ativo');
         $btnNotif.disabled = true;
+        setTimeout(() => { $btnNotif.closest('.card').style.display = 'none'; }, 1000);
         try {
           const messaging = getMessaging(app);
           const token = await getToken(messaging, { vapidKey: VAPID_KEY });
