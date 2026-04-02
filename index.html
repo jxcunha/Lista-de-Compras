@@ -19,16 +19,13 @@
       --primary-hover:#e64a19;
       --radius:16px;
     }
-
     *{ box-sizing: border-box; }
-
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
     }
-
     .app{
       max-width: 920px;
       margin: 0 auto;
@@ -36,7 +33,6 @@
       display: grid;
       gap: 16px;
     }
-
     .top{
       display:flex;
       align-items:center;
@@ -53,12 +49,7 @@
       padding: 10px;
       object-fit: contain;
     }
-    .title{
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -.3px;
-    }
-
+    .title{ font-size: 28px; font-weight: 800; letter-spacing: -.3px; }
     .card{
       background: var(--card);
       border: 1px solid var(--border);
@@ -66,20 +57,8 @@
       box-shadow: var(--shadow);
       padding: 16px;
     }
-
-    .card h2{
-      margin: 0 0 12px;
-      font-size: 18px;
-      font-weight: 800;
-    }
-
-    .row{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      margin-bottom: 10px;
-    }
-
+    .card h2{ margin: 0 0 12px; font-size: 18px; font-weight: 800; }
+    .row{ display:flex; gap: 10px; align-items:center; margin-bottom: 10px; }
     input{
       width: 100%;
       padding: 12px 12px;
@@ -93,17 +72,14 @@
       border-color: rgba(255,87,34,.55);
       box-shadow: 0 0 0 4px rgba(255,87,34,.12);
     }
-
     .btn-icon{
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: #fff;
       cursor: pointer;
       font-size: 18px;
     }
-
     .btn-primary{
       width: 100%;
       padding: 12px 14px;
@@ -117,158 +93,60 @@
       box-shadow: 0 10px 18px rgba(255,87,34,.22);
     }
     .btn-primary:hover{ background: var(--primary-hover); }
-
-    /* Lista */
-    ul.lista{
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    ul.lista{ list-style: none; padding: 0; margin: 0; display:flex; flex-direction: column; gap: 10px; }
     ul.lista li{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #fff;
+      display:flex; align-items:center; justify-content: space-between;
+      gap: 12px; padding: 12px; border: 1px solid var(--border);
+      border-radius: 14px; background: #fff;
     }
     .item-info .name{
-      font-weight: 800;
-      font-size: 16px;
-      margin-bottom: 4px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      width: fit-content;
+      font-weight: 800; font-size: 16px; margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px; cursor: pointer; width: fit-content;
     }
-    .item-info .name:hover .name-text{
-      text-decoration: underline;
-      color: var(--primary);
-    }
-    .item-info .meta{
-      color: var(--muted);
-      font-size: 13px;
-    }
-    .foto-badge{
-      font-size: 13px;
-    }
-    .actions{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-    }
+    .item-info .name:hover .name-text{ text-decoration: underline; color: var(--primary); }
+    .item-info .meta{ color: var(--muted); font-size: 13px; }
+    .foto-badge{ font-size: 13px; }
+    .actions{ display:flex; gap: 8px; align-items:center; }
     .actions button{
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #fff;
-      cursor:pointer;
-      font-size: 18px;
+      width: 44px; height: 44px; border-radius: 12px;
+      border: 1px solid var(--border); background: #fff; cursor:pointer; font-size: 18px;
     }
-
-    /* Modal de foto */
     .modal-overlay{
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+      z-index: 1000; align-items: center; justify-content: center;
     }
     .modal-overlay.aberto{ display: flex; }
-
     .modal{
-      background: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      width: 90%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      background: #fff; border-radius: 20px; padding: 24px;
+      width: 90%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; gap: 16px;
     }
-    .modal-header{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .modal-header h3{
-      margin: 0;
-      font-size: 17px;
-      font-weight: 800;
-    }
+    .modal-header{ display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3{ margin: 0; font-size: 17px; font-weight: 800; }
     .modal-close{
-      background: #f3f4f6;
-      border: none;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--muted);
+      background: #f3f4f6; border: none; width: 30px; height: 30px;
+      border-radius: 8px; font-size: 14px; cursor: pointer; color: var(--muted);
     }
     .modal-close:hover{ background: #e5e7eb; }
-
     .foto-preview{
-      width: 100%;
-      border-radius: 14px;
-      border: 2px dashed var(--border);
-      min-height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: #f9fafb;
+      width: 100%; border-radius: 14px; border: 2px dashed var(--border);
+      min-height: 180px; display: flex; align-items: center;
+      justify-content: center; overflow: hidden; background: #f9fafb;
     }
-    .foto-preview img{
-      width: 100%;
-      object-fit: contain;
-      max-height: 280px;
-    }
+    .foto-preview img{ width: 100%; object-fit: contain; max-height: 280px; }
     .foto-preview .sem-foto{
-      color: var(--muted);
-      font-size: 14px;
-      text-align: center;
-      padding: 20px;
-      line-height: 2;
+      color: var(--muted); font-size: 14px; text-align: center; padding: 20px; line-height: 2;
     }
-
-    .modal-acoes{
-      display: flex;
-      gap: 10px;
-    }
+    .modal-acoes{ display: flex; gap: 10px; }
     .modal-acoes label, .modal-acoes button{
-      flex: 1;
-      padding: 11px 8px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      text-align: center;
-      background: #fff;
+      flex: 1; padding: 11px 8px; border-radius: 12px; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 700; cursor: pointer; text-align: center; background: #fff;
     }
     .modal-acoes label:hover{ background: #f9fafb; }
-
-    .btn-remover-foto{
-      color: #ef4444;
-      border-color: #fca5a5 !important;
-    }
+    .btn-remover-foto{ color: #ef4444; border-color: #fca5a5 !important; }
     .btn-remover-foto:hover{ background: #fef2f2 !important; }
-
     #inputFoto, #inputCamera{ display: none; }
-
-    /* Responsivo */
     @media (max-width: 640px){
       .title{ font-size: 22px; }
       .row{ flex-direction: column; align-items: stretch; }
@@ -283,52 +161,45 @@
     <div class="top">
       <img class="logo" src="./Carrinho.png" alt="Carrinho de supermercado" />
     </div>
-
     <section class="card">
       <h2>Adicionar item</h2>
-
       <div class="row">
         <input type="text" id="produto" placeholder="Produto" />
         <input type="text" id="quantidade" placeholder="Quantidade" />
       </div>
-
       <div class="row search-row">
         <input type="text" id="categoria" placeholder="Categoria (opcional)" />
-        <button id="btnBuscar" class="btn-icon" title="Filtrar por categoria">🔍</button>
+        <button id="btnBuscar" class="btn-icon" title="Filtrar por categoria">&#128269;</button>
       </div>
-
       <button id="btnIncluir" class="btn-primary">+ Incluir item</button>
     </section>
-
     <section class="card">
       <h2>Itens adicionados</h2>
       <ul id="lista" class="lista"></ul>
     </section>
   </main>
-
-  <!-- Modal de foto -->
   <div class="modal-overlay" id="modalFoto">
     <div class="modal">
       <div class="modal-header">
         <h3 id="modalNomeProduto">Foto do produto</h3>
-        <button class="modal-close" id="btnFecharModal">✕</button>
+        <button class="modal-close" id="btnFecharModal">&#x2715;</button>
       </div>
       <div class="foto-preview" id="fotoPreview">
-        <div class="sem-foto">📷<br>Nenhuma foto ainda</div>
+        <div class="sem-foto">&#128247;<br>Nenhuma foto ainda</div>
       </div>
       <div class="modal-acoes">
-        <label for="inputFoto">📁 Arquivo</label>
-        <label for="inputCamera">📷 Câmera</label>
-        <button class="btn-remover-foto" id="btnRemoverFoto" style="display:none">🗑 Remover</button>
+        <label for="inputFoto">&#128193; Arquivo</label>
+        <label for="inputCamera">&#128247; Camera</label>
+        <button class="btn-remover-foto" id="btnRemoverFoto" style="display:none">&#128465; Remover</button>
       </div>
       <input type="file" id="inputFoto" accept="image/*" />
       <input type="file" id="inputCamera" accept="image/*" capture="environment" />
     </div>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, update, off } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    import { getDatabase, ref, push, set, onValue, remove, update, off } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD0zPaADARoJLxTyDf6GIy_2BOzKc3v8x8",
@@ -342,20 +213,59 @@
 
     const app = initializeApp(firebaseConfig);
     const db  = getDatabase(app);
-
     const listId = "minha-lista";
-    const $produto   = document.getElementById("produto");
-    const $qtd       = document.getElementById("quantidade");
-    const $cat       = document.getElementById("categoria");
-    const $btnBuscar = document.getElementById("btnBuscar");
-    const $btnIncluir= document.getElementById("btnIncluir");
-    const $lista     = document.getElementById("lista");
-    const $status    = document.getElementById("status");
+
+    const $produto    = document.getElementById("produto");
+    const $qtd        = document.getElementById("quantidade");
+    const $cat        = document.getElementById("categoria");
+    const $btnBuscar  = document.getElementById("btnBuscar");
+    const $btnIncluir = document.getElementById("btnIncluir");
+    const $lista      = document.getElementById("lista");
+    const $status     = document.getElementById("status");
+
+    const VAPID_KEY = "BFHkWOAl_F-Koq61YEOvgHHPPyUXvIrzelral64T4VxcDUhnEnQHe8eUoM1p4ipyX5OycB84LgpPqXwuDv4QR1k";
+
+    const deviceId = localStorage.getItem('deviceId') || (() => {
+      const id = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2, 16));
+      localStorage.setItem('deviceId', id);
+      return id;
+    })();
 
     let itensCache = [];
     let filtroCategoria = "";
     let detach = null;
     let itemFotoAtual = null;
+    let primeiraCarregada = false;
+    let ultimoTs = 0;
+
+    function mostrarNotificacao(titulo, corpo) {
+      if (Notification.permission !== 'granted') return;
+      navigator.serviceWorker.ready.then(reg => {
+        reg.showNotification(titulo, { body: corpo, icon: './Carrinho.png', badge: './Carrinho.png' });
+      });
+    }
+
+    async function iniciarNotificacoes() {
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+      const permissao = await Notification.requestPermission();
+      if (permissao !== 'granted') return;
+      try {
+        const messaging = getMessaging(app);
+        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+        if (token) {
+          const tokenKey = token.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
+          await set(ref(db, 'fcm_tokens/' + tokenKey), { token, ts: Date.now() });
+        }
+        onMessage(messaging, (payload) => {
+          mostrarNotificacao(
+            payload.notification?.title || 'Lista de Compras',
+            payload.notification?.body  || 'A lista foi atualizada!'
+          );
+        });
+      } catch (e) {
+        console.warn('FCM nao disponivel:', e.message);
+      }
+    }
 
     function setStatus(msg, isError=false) {
       if (!$status) return;
@@ -363,36 +273,39 @@
       $status.className = "status" + (isError ? " error" : "");
     }
 
-    function caminhoLista() {
-      return `listas/${listId}/itens`;
-    }
+    function caminhoLista() { return 'listas/' + listId + '/itens'; }
 
     function observarLista() {
-      if (detach) {
-        off(ref(db, caminhoLista()));
-        detach = null;
-      }
+      if (detach) { off(ref(db, caminhoLista())); detach = null; }
       const r = ref(db, caminhoLista());
       detach = onValue(r, (snap) => {
         const dados = snap.val() || {};
-        itensCache = Object.entries(dados).map(([id, v]) => ({ id, ...v }));
+        const novosItens = Object.entries(dados).map(([id, v]) => ({ id, ...v }));
+        if (primeiraCarregada) {
+          novosItens.forEach(item => {
+            if ((item.ts || 0) > ultimoTs && item.deviceId !== deviceId) {
+              mostrarNotificacao(
+                item.produto + ' adicionado!',
+                item.quantidade ? 'Quantidade: ' + item.quantidade : 'Novo item na lista'
+              );
+            }
+          });
+        }
+        ultimoTs = novosItens.length > 0 ? Math.max(...novosItens.map(i => i.ts || 0)) : ultimoTs;
+        primeiraCarregada = true;
+        itensCache = novosItens;
         renderizar();
       }, (err) => {
         console.error(err);
-        setStatus("Erro ao ler do Firebase. Verifique as regras do Realtime Database.", true);
+        setStatus("Erro ao ler do Firebase.", true);
       });
     }
 
     function escapeHtml(s) {
-      return String(s)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+      return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
     }
 
-    // Comprime imagem para base64 (máx 800px, qualidade 80%) → ~50-100KB
     function comprimirImagem(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -421,56 +334,40 @@
       const origem = filtroCategoria
         ? itensCache.filter(i => (i.categoria || "").toLowerCase().includes(filtroCategoria))
         : itensCache;
-
       const origemOrdenada = [...origem].sort((a,b) => (b.ts||0) - (a.ts||0));
-
       origemOrdenada.forEach(item => {
         const li = document.createElement("li");
-
         const info = document.createElement("div");
         info.className = "item-info" + (item.riscado ? " riscado" : "");
-
-        // Nome clicável para abrir foto
         const nameDiv = document.createElement("div");
         nameDiv.className = "name";
         nameDiv.title = "Clique para ver/adicionar foto";
-
         const nameSpan = document.createElement("span");
         nameSpan.className = "name-text";
         nameSpan.textContent = item.produto || "";
         nameDiv.appendChild(nameSpan);
-
         if (item.foto) {
           const badge = document.createElement("span");
           badge.className = "foto-badge";
           badge.textContent = "📷";
           nameDiv.appendChild(badge);
         }
-
         nameDiv.addEventListener("click", () => abrirModalFoto(item.id));
-
         const meta = document.createElement("div");
         meta.className = "meta";
-        meta.textContent = `Qtd: ${item.quantidade || ""}${item.categoria ? " • " + item.categoria : ""}`;
-
+        meta.textContent = 'Qtd: ' + (item.quantidade || "") + (item.categoria ? " - " + item.categoria : "");
         info.appendChild(nameDiv);
         info.appendChild(meta);
-
         const excluir = document.createElement("button");
         excluir.title = "Excluir";
         excluir.textContent = "🗑️";
         excluir.onclick = async () => {
-          try {
-            await remove(ref(db, `${caminhoLista()}/${item.id}`));
-          } catch (e) {
-            console.error(e); setStatus("Falha ao excluir item (regras do DB?).", true);
-          }
+          try { await remove(ref(db, caminhoLista() + '/' + item.id)); }
+          catch (e) { console.error(e); setStatus("Falha ao excluir item.", true); }
         };
-
         const acoes = document.createElement("div");
         acoes.className = "actions";
         acoes.appendChild(excluir);
-
         li.appendChild(info);
         li.appendChild(acoes);
         $lista.appendChild(li);
@@ -478,14 +375,13 @@
     }
 
     async function incluirItem() {
-      const produto    = ($produto.value || "").trim();
-      const quantidade = ($qtd.value || "").trim();
-      const categoria  = ($cat.value || "").trim();
+      const produto   = ($produto.value || "").trim();
+      const quantidade= ($qtd.value || "").trim();
+      const categoria = ($cat.value || "").trim();
       if (!produto) return;
-
       try {
         await push(ref(db, caminhoLista()), {
-          produto, quantidade, categoria, riscado: false, foto: null, ts: Date.now()
+          produto, quantidade, categoria, riscado: false, foto: null, ts: Date.now(), deviceId
         });
         setStatus("");
         $produto.value = "";
@@ -493,7 +389,7 @@
         $produto.focus();
       } catch (e) {
         console.error(e);
-        setStatus("Falha ao salvar no Firebase. Verifique as regras do DB.", true);
+        setStatus("Falha ao salvar no Firebase.", true);
       }
     }
 
@@ -502,7 +398,6 @@
       renderizar();
     }
 
-    // ── Modal de foto ─────────────────────────────────────────
     function abrirModalFoto(id) {
       const item = itensCache.find(i => i.id === id);
       if (!item) return;
@@ -521,10 +416,10 @@
       const preview = document.getElementById("fotoPreview");
       const btnRemover = document.getElementById("btnRemoverFoto");
       if (base64) {
-        preview.innerHTML = `<img src="${base64}" alt="Foto do produto" />`;
+        preview.innerHTML = '<img src="' + base64 + '" alt="Foto do produto" />';
         btnRemover.style.display = "block";
       } else {
-        preview.innerHTML = `<div class="sem-foto">📷<br>Nenhuma foto ainda</div>`;
+        preview.innerHTML = '<div class="sem-foto">📷<br>Nenhuma foto ainda</div>';
         btnRemover.style.display = "none";
       }
     }
@@ -533,11 +428,9 @@
       if (!file || !itemFotoAtual) return;
       const base64 = await comprimirImagem(file);
       try {
-        await update(ref(db, `${caminhoLista()}/${itemFotoAtual}`), { foto: base64 });
+        await update(ref(db, caminhoLista() + '/' + itemFotoAtual), { foto: base64 });
         atualizarPreviewFoto(base64);
-      } catch (e) {
-        console.error(e); setStatus("Falha ao salvar foto.", true);
-      }
+      } catch (e) { console.error(e); setStatus("Falha ao salvar foto.", true); }
     }
 
     document.getElementById("btnFecharModal").addEventListener("click", fecharModal);
@@ -547,27 +440,19 @@
     document.getElementById("btnRemoverFoto").addEventListener("click", async () => {
       if (!itemFotoAtual) return;
       try {
-        await update(ref(db, `${caminhoLista()}/${itemFotoAtual}`), { foto: null });
+        await update(ref(db, caminhoLista() + '/' + itemFotoAtual), { foto: null });
         atualizarPreviewFoto(null);
       } catch (e) { console.error(e); }
     });
     document.getElementById("inputFoto").addEventListener("change", (e) => {
-      processarArquivoFoto(e.target.files[0]);
-      e.target.value = "";
+      processarArquivoFoto(e.target.files[0]); e.target.value = "";
     });
     document.getElementById("inputCamera").addEventListener("change", (e) => {
-      processarArquivoFoto(e.target.files[0]);
-      e.target.value = "";
+      processarArquivoFoto(e.target.files[0]); e.target.value = "";
     });
-
-    // ── Eventos originais ─────────────────────────────────────
     $cat.addEventListener("input", () => {
-      if (($cat.value || "").trim() === "") {
-        filtroCategoria = "";
-        renderizar();
-      }
+      if (($cat.value || "").trim() === "") { filtroCategoria = ""; renderizar(); }
     });
-
     $btnIncluir.addEventListener("click", incluirItem);
     $btnBuscar.addEventListener("click", aplicarFiltro);
     ["produto", "quantidade"].forEach(id => {
@@ -577,12 +462,12 @@
     });
 
     observarLista();
+    iniciarNotificacoes();
   </script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js"));
     }
   </script>
-
 </body>
-</html>
+  </html>
