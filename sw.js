@@ -1,17 +1,41 @@
+importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging-compat.js');
 
-// Cache simples com caminhos RELATIVOS (compatível com GitHub Pages em subpasta)
-const CACHE_NAME = 'lista-compras-cache-v6';
-const URLS_TO_CACHE = [
-  './',
-  './index.html',
-  './Carrinho.png',
-  './manifest.json'
-];
+firebase.initializeApp({
+  apiKey: "AIzaSyD0zPaADARoJLxTyDf6GIy_2BOzKc3v8x8",
+  authDomain: "compras-ca22d.firebaseapp.com",
+  databaseURL: "https://compras-ca22d-default-rtdb.firebaseio.com",
+  projectId: "compras-ca22d",
+  storageBucket: "compras-ca22d.firebasestorage.app",
+  messagingSenderId: "823577033462",
+  appId: "1:823577033462:web:1e7794ab17296067f40ad7"
+});
+
+const messaging = firebase.messaging();
+
+// Notificações em background (app fechado)
+messaging.onBackgroundMessage((payload) => {
+  const title = payload.notification?.title || 'Lista de Compras';
+  const body  = payload.notification?.body  || 'A lista foi atualizada!';
+  self.registration.showNotification(title, {
+    body,
+    icon: './Carrinho.png',
+    badge: './Carrinho.png'
+  });
+});
+
+// Ao clicar na notificação, abre o app
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(clients.openWindow('./'));
+});
+
+// Cache
+const CACHE_NAME = 'lista-compras-cache-v7';
+const URLS_TO_CACHE = ['./', './index.html', './Carrinho.png', './manifest.json'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE))
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE)));
   self.skipWaiting();
 });
 
@@ -26,6 +50,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+  if (req.url.includes('firebase') || req.url.includes('googleapis') || req.url.includes('gstatic')) return;
   event.respondWith(
     caches.match(req).then((cached) => {
       return cached || fetch(req).then((res) => {
