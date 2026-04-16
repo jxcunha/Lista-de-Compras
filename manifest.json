@@ -1,6 +1,6 @@
 {
   "name": "Lista de Compras Compartilhada",
-  "short_name": "Compras",
+  "short_name": "Lista de Compras",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#F1F1F1",
