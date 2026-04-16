@@ -43,7 +43,6 @@
       justify-content:center;
       gap: 12px;
       padding: 6px 0 10px;
-      position: relative;
     }
     .logo{
       width: 54px;
@@ -59,23 +58,6 @@
       font-weight: 800;
       letter-spacing: -.3px;
     }
-    .btn-notif{
-      position: absolute;
-      right: 0;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: #fff;
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,.06);
-    }
-    .btn-notif.ativo{ background: #fff7f0; border-color: var(--primary); }
-    .btn-notif.negado{ background: #fef2f2; border-color: #fca5a5; }
 
     .card{
       background: var(--card);
@@ -300,7 +282,6 @@
   <main class="app">
     <div class="top">
       <img class="logo" src="./Carrinho.png" alt="Carrinho de supermercado" />
-      <button id="btnNotif" class="btn-notif" title="Ativar notificações">🔔</button>
     </div>
 
     <section class="card">
@@ -399,49 +380,16 @@
       });
     }
 
-    const $btnNotif = document.getElementById("btnNotif");
-
-    function atualizarBotaoNotif() {
-      if (!('Notification' in window)) {
-        $btnNotif.style.display = 'none';
-        return;
-      }
-      const p = Notification.permission;
-      $btnNotif.classList.toggle('ativo', p === 'granted');
-      $btnNotif.classList.toggle('negado', p === 'denied');
-      $btnNotif.title = p === 'granted' ? 'Notificações ativas' : p === 'denied' ? 'Permissão negada — habilite nas configurações do iPhone' : 'Ativar notificações';
-      $btnNotif.textContent = p === 'granted' ? '🔔' : p === 'denied' ? '🔕' : '🔔';
-    }
-
     async function iniciarNotificacoes() {
       if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
-      if (Notification.permission === 'denied') {
-        alert('Notificações bloqueadas. Para ativar, vá em Ajustes > Safari > [este site] e permita notificações.');
-        return;
-      }
-      const permissao = await Notification.requestPermission();
-      atualizarBotaoNotif();
-      if (permissao !== 'granted') return;
-      try {
-        const messaging = getMessaging(app);
-        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-        if (token) {
-          const tokenKey = token.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '_');
-          await set(ref(db, `fcm_tokens/${tokenKey}`), { token, ts: Date.now() });
-        }
-        onMessage(messaging, (payload) => {
-          mostrarNotificacao(
-            payload.notification?.title || 'Lista de Compras',
-            payload.notification?.body  || 'A lista foi atualizada!'
-          );
-        });
-      } catch (e) {
-        console.warn('FCM não disponível:', e.message);
-      }
-    }
+      if (Notification.permission === 'denied') return;
 
-    async function registrarFCMSeJaConcedido() {
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+      // Pede permissão apenas uma vez
+      if (Notification.permission === 'default' && !localStorage.getItem('notifPedida')) {
+        localStorage.setItem('notifPedida', '1');
+        await Notification.requestPermission();
+      }
+
       if (Notification.permission !== 'granted') return;
       try {
         const messaging = getMessaging(app);
@@ -695,11 +643,8 @@
       });
     });
 
-    $btnNotif.addEventListener('click', iniciarNotificacoes);
-
     observarLista();
-    atualizarBotaoNotif();
-    registrarFCMSeJaConcedido();
+    iniciarNotificacoes();
   </script>
   <script>
     if ("serviceWorker" in navigator) {
