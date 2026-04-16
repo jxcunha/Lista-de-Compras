@@ -32,11 +32,11 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 // ── Cache ──────────────────────────────────────────────────────
-const CACHE_NAME = 'lista-compras-cache-v11';
-const URLS_TO_CACHE = ['./', './index.html', './Carrinho.png', './manifest.json'];
+const CACHE_NAME = 'lista-compras-cache-v12';
+const STATIC = ['./Carrinho.png'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(URLS_TO_CACHE)));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC)));
   self.skipWaiting();
 });
 
@@ -51,8 +51,20 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
-  // Não cachear requisições do Firebase/Google
-  if (req.url.includes('firebase') || req.url.includes('googleapis') || req.url.includes('gstatic')) return;
+  const url = req.url;
+
+  // Não interceptar Firebase/Google
+  if (url.includes('firebase') || url.includes('googleapis') || url.includes('gstatic')) return;
+
+  // index.html e manifest: sempre busca na rede (network-first)
+  if (url.endsWith('/') || url.includes('index.html') || url.includes('manifest.json')) {
+    event.respondWith(
+      fetch(req).catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Demais arquivos: cache-first
   event.respondWith(
     caches.match(req).then((cached) => {
       return cached || fetch(req).then((res) => {
