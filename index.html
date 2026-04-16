@@ -268,6 +268,36 @@
 
     #inputFoto, #inputCamera{ display: none; }
 
+    /* Faixa de ativar notificações */
+    .faixa-notif{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff7ed;
+      border: 1.5px solid #fdba74;
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      cursor: pointer;
+    }
+    .faixa-notif span{
+      font-size: 14px;
+      font-weight: 600;
+      color: #9a3412;
+      flex: 1;
+    }
+    .faixa-notif .faixa-btn{
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     /* Responsivo */
     @media (max-width: 640px){
       .title{ font-size: 22px; }
@@ -282,6 +312,11 @@
   <main class="app">
     <div class="top">
       <img class="logo" src="./Carrinho.png" alt="Carrinho de supermercado" />
+    </div>
+
+    <div class="faixa-notif" id="faixaNotif" style="display:none">
+      <span>🔔 Ative as notificações para saber quando alguém adicionar um item</span>
+      <button class="faixa-btn" id="btnAtivarNotif">Ativar</button>
     </div>
 
     <section class="card">
@@ -380,17 +415,10 @@
       });
     }
 
-    async function iniciarNotificacoes() {
-      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
-      if (Notification.permission === 'denied') return;
+    const $faixaNotif = document.getElementById("faixaNotif");
+    const $btnAtivarNotif = document.getElementById("btnAtivarNotif");
 
-      // Pede permissão apenas uma vez
-      if (Notification.permission === 'default' && !localStorage.getItem('notifPedida')) {
-        localStorage.setItem('notifPedida', '1');
-        await Notification.requestPermission();
-      }
-
-      if (Notification.permission !== 'granted') return;
+    async function registrarFCM() {
       try {
         const messaging = getMessaging(app);
         const token = await getToken(messaging, { vapidKey: VAPID_KEY });
@@ -408,6 +436,23 @@
         console.warn('FCM não disponível:', e.message);
       }
     }
+
+    async function iniciarNotificacoes() {
+      if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+      if (Notification.permission === 'granted') { await registrarFCM(); return; }
+      if (Notification.permission === 'denied') return;
+      // Ainda não decidido: mostra a faixa se nunca foi mostrada
+      if (!localStorage.getItem('notifPedida')) {
+        $faixaNotif.style.display = 'flex';
+      }
+    }
+
+    $btnAtivarNotif.addEventListener('click', async () => {
+      localStorage.setItem('notifPedida', '1');
+      $faixaNotif.style.display = 'none';
+      const permissao = await Notification.requestPermission();
+      if (permissao === 'granted') await registrarFCM();
+    });
 
     function setStatus(msg, isError=false) {
       if (!$status) return;
