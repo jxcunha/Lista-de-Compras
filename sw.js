@@ -1,3 +1,4 @@
+
 importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging-compat.js');
 
@@ -30,8 +31,8 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(clients.openWindow('./'));
 });
 
-// Cache
-const CACHE_NAME = 'lista-compras-cache-v7';
+// ── Cache ──────────────────────────────────────────────────────
+const CACHE_NAME = 'lista-compras-cache-v8';
 const URLS_TO_CACHE = ['./', './index.html', './Carrinho.png', './manifest.json'];
 
 self.addEventListener('install', (event) => {
@@ -50,6 +51,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+  // Não cachear requisições do Firebase/Google
   if (req.url.includes('firebase') || req.url.includes('googleapis') || req.url.includes('gstatic')) return;
   event.respondWith(
     caches.match(req).then((cached) => {
